@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var parametersController = require('../controller/parametersController.js');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('parametros atuais');
-});
+/* GET parameters listing. */
+router.get('/', parametersController.getParameters); 
+router.post('/', parametersController.setParameters);
 
 module.exports = router;
