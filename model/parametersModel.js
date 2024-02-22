@@ -1,14 +1,17 @@
 const db = require('../db/db.js');
+
 // Dados a serem inseridos
 const data = {
-    name: 'geral',
-    start_date: 3,
-    end_date: 5,
+    name: null,
+    start_date: null,
+    end_date: null,
 };
 
 
 async function getParameters() {
+
     const conn = await db.connect();
+
     try {
         const [results] = await conn.query('SELECT * FROM date_parameters');
         return results;
@@ -17,8 +20,14 @@ async function getParameters() {
     }
 }
 
-async function setParameters() {
+async function setParameters(dataSet) {
+
+    data.name = dataSet.name;
+    data.start_date = dataSet.start_date;
+    data.end_date = dataSet.end_date;
+
     const conn = await db.connect();
+
     try {
         // Consulta SQL com placeholders
         const sql = 'INSERT INTO date_parameters SET ?';
