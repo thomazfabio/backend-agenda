@@ -1,4 +1,5 @@
 const { setParameters, getParameters, updateParameters } = require('../model/parametersModel.js')
+const { undefinedPropertyRemover } = require('../utils/undefinedPropertyRemover.js')
 
 //get
 exports.getParameters = async (req, res) => {
@@ -27,6 +28,10 @@ exports.updateParameters = async (req, res) => {
         start_date: req.body.start_date,
         end_date: req.body.end_date
     }
+
+    console.log(dataSet)
+    dataSet = await undefinedPropertyRemover(dataSet)
+    console.log(dataSet)
 
     try {
         const data = await updateParameters(id, dataSet)
