@@ -4,10 +4,10 @@ const db = require('../db/db.js');
 const data = {
     name: null,
     start_date: null,
-    end_date: null,
+    end_date: null
 };
 
-
+// obter
 async function getParameters() {
 
     const conn = await db.connect();
@@ -20,11 +20,10 @@ async function getParameters() {
     }
 }
 
+// adicionar 
 async function setParameters(dataSet) {
 
-    data.name = dataSet.name;
-    data.start_date = dataSet.start_date;
-    data.end_date = dataSet.end_date;
+    Object.assign(data, dataSet);
 
     const conn = await db.connect();
 
@@ -41,5 +40,48 @@ async function setParameters(dataSet) {
     }
 }
 
+//Update
+async function updateParameters(id, newData) {
+    // Conecta ao banco de dados
+    const conn = await db.connect();
+
+    try {
+        // Consulta SQL para recuperar os dados existentes
+        const selectQuery = 'SELECT * FROM date_parameters WHERE id = ?';
+        const [rows] = await conn.query(selectQuery, id);
+
+        // Verifica se o parâmetro com o ID especificado existe
+        if (rows.length === 0) {
+            return 'Parâmetro não encontrado';
+        }
+
+        // Extrai os dados existentes do banco de dados
+        const existingData = rows[0];
+
+        // Verifica quais campos foram alterados
+        const updatedData = {};
+        for (const key in newData) {
+            if (existingData[key] !== newData[key]) {
+                updatedData[key] = newData[key];
+            }
+        }
+
+        // Se não houver campos alterados, retorna sem executar a atualização
+        if (Object.keys(updatedData).length === 0) {
+            return 'Nenhum dado alterado';
+        }
+
+        // Atualiza apenas os campos alterados no banco de dados
+        const updateQuery = 'UPDATE date_parameters SET ? WHERE id = ?';
+        await conn.query(updateQuery, [updatedData, id]);
+
+        console.log('Atualização bem-sucedida!');
+        return 'Atualização bem-sucedida';
+    } catch (error) {
+        return error;
+    }
+}
+
 exports.getParameters = getParameters;
 exports.setParameters = setParameters;
+exports.updateParameters = updateParameters;
