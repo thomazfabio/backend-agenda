@@ -41,13 +41,13 @@ async function setParameters(dataSet) {
 }
 
 //Update
-async function updateParameters(id, newData) {
+async function updateParameters(table, id, newData) {
     // Conecta ao banco de dados
     const conn = await db.connect();
 
     try {
         // Consulta SQL para recuperar os dados existentes
-        const selectQuery = 'SELECT * FROM date_parameters WHERE id = ?';
+        const selectQuery = `SELECT * FROM ${table} WHERE id = ?`;
         const [rows] = await conn.query(selectQuery, id);
 
         // Verifica se o parâmetro com o ID especificado existe
